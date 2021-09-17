@@ -9,12 +9,25 @@ const server = http.createServer((request, response) => {
 
   console.log(`Request method: ${request.method} | Endpoint: ${parseUrl.pathname}`);
 
+  let { pathname } = parseUrl;
+  let id = null;
+
+  const splitEndPoint = pathname.split('/').filter(Boolean); //Mark2
+
+  if(splitEndPoint.length > 1) {
+    pathname = `/${splitEndPoint[0]}/:id`;
+    id = splitEndPoint[1];
+  }
+  
+
   const route = routes.find((routeObjt) => (
-    routeObjt.endpoint === parseUrl.pathname && routeObjt.method === request.method
+    routeObjt.endpoint === pathname && routeObjt.method === request.method
   ));
 
   if(route) {
-    request.query = Object.fromEntries(parseUrl.searchParams); //Convertendo o tipo Iterable em Objt JS
+    request.query = Object.fromEntries(parseUrl.searchParams); //Mark1
+    request.params = { id };
+
     route.handler(request, response);
   } else {
     response.writeHead(404, { 'Context-Type': 'text/html' });
@@ -24,3 +37,15 @@ const server = http.createServer((request, response) => {
 
 //Ligando o Servidor e deixa-lo executando em uma porta
 server.listen(3000, () => console.log(' 🔥 Server started at http://localhost:3000'))
+
+/* Mark1
+  Convertendo o tipo Iterable em Objt JS
+  Iterable Type -> parseUrl.searchParams
+  request.query = Object.fromEntries(parseUrl.searchParams);
+*/
+
+/* Mark2 
+  Truefy and Falsy do JS -> Caso meu filter retorne algum valor falsy ele nao coloca
+    sendo assim '' = falsy nao aparece no console.log
+    -> filter((routeItem) => Boolean(routeItem)) <-
+*/
