@@ -15,8 +15,8 @@ const server = http.createServer((request, response) => {
   const splitEndPoint = pathname.split('/').filter(Boolean); //Mark2
 
   if(splitEndPoint.length > 1) {
-    pathname = `/${splitEndPoint[0]}/:id`;
-    id = splitEndPoint[1];
+    pathname = `/${splitEndPoint[0]}/:id`; // [0] = Endpoint
+    id = splitEndPoint[1]; // [1] = ID
   }
   
 
@@ -27,6 +27,11 @@ const server = http.createServer((request, response) => {
   if(route) {
     request.query = Object.fromEntries(parseUrl.searchParams); //Mark1
     request.params = { id };
+
+    response.send = (statusCode, body) => {
+      response.writeHead(statusCode, { 'Context-Type': 'application/json' });
+      response.end(JSON.stringify(body));
+    }
 
     route.handler(request, response);
   } else {
