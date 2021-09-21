@@ -46,7 +46,7 @@ const server = http.createServer((request, response) => {
 });
 
 //Ligando o Servidor e deixa-lo executando em uma porta
-server.listen(3000, () => console.log(' 🔥 Server started at http://localhost:3000'))
+server.listen(3000, () => console.log(' 🔥 Server started at http://localhost:3000'));
 
 /* Mark1
   Convertendo o tipo Iterable em Objt JS
